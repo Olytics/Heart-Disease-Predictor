@@ -7,9 +7,11 @@ dependencies:
   - altair-all=5.4.*
   - jupyterlab
   - vega_datasets
-  - ipykernel
   - scipy
   - nb_conda_kernels
   - matplotlib>=3.2.2
   - scikit-learn
   - pandas
+  - ipykernel=6.26.0
+  - notebook=6.5.4
+  - jupyter_contrib_nbextensions=0.7.0
