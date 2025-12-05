@@ -1,28 +1,14 @@
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.16.7
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
-# +
 import os
 import click
 import pandas as pd
-from eda_functions import (
+from eda import (
     load_data,
     compute_summary_statistics,
     plot_target_distribution,
     plot_numerical_distributions,
     plot_boxplots,
     plot_categorical_vs_target,
+    plot_correlation_heatmap,  
 )
 
 
@@ -45,27 +31,26 @@ def main(data, output_dir):
     """
     df = load_data(data)
 
-    # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
-    #Summary statistics
+    # Summary statistics
     summary = compute_summary_statistics(df)
     summary.to_csv(os.path.join(output_dir, "summary_statistics.csv"))
 
-    #Bar chart: Heart disease distribution 
+    # Bar chart: Heart disease distribution 
     bar_chart = plot_target_distribution(df)
     bar_chart.save(os.path.join(output_dir, "heart_disease_counts.png"), scale_factor=2)
 
-    #Numerical distributions 
+    # Numerical distributions 
     num_cols = ["age", "resting_bp", "serum_cholesterol", "max_heart_rate", "old_peak"]
     num_dist = plot_numerical_distributions(df, num_cols)
     num_dist.save(os.path.join(output_dir, "numerical_feature_distributions.png"), scale_factor=2)
 
-    #Boxplots
+    # Boxplots
     boxplots = plot_boxplots(df, num_cols)
     boxplots.save(os.path.join(output_dir, "boxplots_vs_target.png"), scale_factor=2)
 
-    #Categorical vs target
+    # Categorical vs target
     axis_titles = {
         "gender": "Gender (0 = Female, 1 = Male)",
         "chest_pain": "Chest Pain Type",
@@ -78,6 +63,11 @@ def main(data, output_dir):
 
     cat_plot = plot_categorical_vs_target(df, axis_titles)
     cat_plot.save(os.path.join(output_dir, "categorical_vs_target.png"), scale_factor=2)
+
+    # Correlation heatmap
+    cat_cols = list(axis_titles.keys())  
+    corr_chart = plot_correlation_heatmap(df, num_cols=num_cols, cat_cols=cat_cols, target_col='target')
+    corr_chart.save(os.path.join(output_dir, "correlation_heatmap.png"), scale_factor=2)
 
 
 if __name__ == "__main__":
