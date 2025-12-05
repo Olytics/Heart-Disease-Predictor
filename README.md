@@ -52,7 +52,12 @@ python scripts/preprocessing.py \
 # Step 2: Generate EDA plots
 python scripts/eda_cli.py \
     --data data/processed/train_heart.csv \
-    --output-dir results/eda_results
+    --output-dir results/eda_results \
+    --target-col target \
+    --num-cols age,resting_bp,serum_cholesterol,max_heart_rate,old_peak \
+    --cat-cols gender,chest_pain,fasting_blood_sugar,resting_electro,exercise_angia,slope,num_major_vessels \
+    --axis-titles "gender:Gender,chest_pain:Chest Pain Type,fasting_blood_sugar:Fasting Blood Sugar,resting_electro:Resting ECG,exercise_angia:Exercise-Induced Angina,slope:Slope of ST Segment,num_major_vessels:Number of Major Vessels"
+
 
 # Step 3: Evaluate models
 python scripts/evaluate_default_models.py \
