@@ -17,8 +17,12 @@ from sklearn.compose import make_column_transformer
 @click.option('--data-to', type=str, help="Path to directory where processed data will be written to")
 @click.option('--preprocessor-to', type=str, help="Path to directory where the preprocessor object will be written to")
 @click.option('--seed', type=int, help="Random seed", default=123)
+@click.option('--split', type=float,     
+              show_default=True,
+              help="Proportion of the dataset to allocate to the test split.", 
+              default=0.2)
 
-def main(raw_data, data_to, preprocessor_to, seed):
+def main(raw_data, data_to, preprocessor_to, seed, split):
     '''This script splits the raw data into train and test sets, 
     and then preprocesses the data to be used in exploratory data analysis.
     It also saves the preprocessor to be used in the model training script.'''
@@ -52,7 +56,7 @@ def main(raw_data, data_to, preprocessor_to, seed):
 
     # Create train test split
     train_heart, test_heart = train_test_split(
-            heart, test_size = 0.2, random_state=seed
+            heart, test_size = split, random_state=seed
         )
 
     #makedir in case the directory doesn't exist
