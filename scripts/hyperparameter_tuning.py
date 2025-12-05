@@ -20,13 +20,14 @@ from joblib import dump
 @click.option('--X_train_path', required=True, help='Path to X_train data CSV')
 @click.option('--y_train_path', required=True, help='Path to y_train data CSV')
 @click.option('--pos_label', default='Heart Disease', help='Positive class label for fbeta_score')
+@click.option('--results_to', type=str, help="Path to directory where the final model will be written to")
 @click.option('--beta', default=2.0, help='Beta parameter for fbeta_score')
 @click.option('--X_test_path', required=True, help="Path to X_test data CSV")
 @click.option('--y_test_path', required=True, help="Path to y_test data CSV")
 @click.option('--preprocessor_path', required=True, help='Path to preprocessor')
 @click.option('--seed', type=int, help="Random seed", default=123)
 
-def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path, pos_label, beta, seed):
+def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path, pos_label, beta, seed, results_to):
     '''
     Perform hyperparameter tuning on three classifiers: Decision Tree, Logistic Regression, and SVM.
     Also save the best classifier model and scores.
@@ -92,7 +93,12 @@ def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path
     final_model = make_pipeline(preprocessor, model_summary[best_model][0])
     final_model.fit(X_train, y_train)
     result = final_model.score(X_test, y_test)
-    return result
+    return f'(The score on the test set using {best_model} is {result})'
+
+    # Save final model in pickle file
+    with open(os.path.join(results_to, "heart_final_model.pickle"), 'wb') as f:
+        pickle.dump(final_model, f)
+
 
 if __name__ == '__main__':
     main()
