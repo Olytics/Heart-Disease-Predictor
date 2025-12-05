@@ -17,56 +17,71 @@ from eda import (
               help="Path to processed training data CSV.")
 @click.option("--output-dir", type=str, required=True,
               help="Directory where all EDA plots and summary files will be saved.")
-def main(data, output_dir):
+@click.option("--target-col", type=str, required=True,
+              help="Name of the target column.")
+@click.option("--num-cols", type=str, default="",
+              help="Comma-separated list of numerical columns.")
+@click.option("--cat-cols", type=str, default="",
+              help="Comma-separated list of categorical columns.")
+@click.option("--axis-titles", type=str, default="",
+              help="Optional comma-separated list of column:title for categorical plots, e.g. gender:Gender")
+def main(data, output_dir, target_col, num_cols, cat_cols, axis_titles):
     """
-    Run exploratory data analysis on the heart disease dataset.
+    Run exploratory data analysis on any dataset with numerical, categorical, and target columns.
 
     Parameters
     ----------
     data : str
-        Path to the processed heart disease dataset CSV.
-
+        Path to CSV dataset.
     output_dir : str
         Directory where plots and summary statistics will be saved.
+    target_col : str
+        Name of the target column.
+    num_cols : str
+        Comma-separated list of numerical column names.
+    cat_cols : str
+        Comma-separated list of categorical column names.
+    axis_titles : str
+        Optional comma-separated mapping of categorical columns to axis titles.
     """
     df = load_data(data)
-
     os.makedirs(output_dir, exist_ok=True)
+
+    # Parse numerical and categorical columns
+    num_cols = [col.strip() for col in num_cols.split(",") if col.strip()]
+    cat_cols = [col.strip() for col in cat_cols.split(",") if col.strip()]
+
+    # Parse axis titles mapping
+    axis_titles_dict = {}
+    if axis_titles:
+        for item in axis_titles.split(","):
+            col, title = item.split(":")
+            axis_titles_dict[col.strip()] = title.strip()
 
     # Summary statistics
     summary = compute_summary_statistics(df)
     summary.to_csv(os.path.join(output_dir, "summary_statistics.csv"))
 
-    # Bar chart: Heart disease distribution 
-    bar_chart = plot_target_distribution(df)
-    bar_chart.save(os.path.join(output_dir, "heart_disease_counts.png"), scale_factor=2)
+    # Target distribution
+    bar_chart = plot_target_distribution(df, target_col=target_col)
+    bar_chart.save(os.path.join(output_dir, f"{target_col}_distribution.png"), scale_factor=2)
 
-    # Numerical distributions 
-    num_cols = ["age", "resting_bp", "serum_cholesterol", "max_heart_rate", "old_peak"]
-    num_dist = plot_numerical_distributions(df, num_cols)
-    num_dist.save(os.path.join(output_dir, "numerical_feature_distributions.png"), scale_factor=2)
+    # Numerical distributions
+    if num_cols:
+        num_dist = plot_numerical_distributions(df, num_cols)
+        num_dist.save(os.path.join(output_dir, "numerical_feature_distributions.png"), scale_factor=2)
 
-    # Boxplots
-    boxplots = plot_boxplots(df, num_cols)
-    boxplots.save(os.path.join(output_dir, "boxplots_vs_target.png"), scale_factor=2)
+        # Boxplots vs target
+        boxplots = plot_boxplots(df, num_cols, target_col)
+        boxplots.save(os.path.join(output_dir, "boxplots_vs_target.png"), scale_factor=2)
 
     # Categorical vs target
-    axis_titles = {
-        "gender": "Gender (0 = Female, 1 = Male)",
-        "chest_pain": "Chest Pain Type",
-        "fasting_blood_sugar": "Fasting Blood Sugar",
-        "resting_electro": "Resting ECG",
-        "exercise_angia": "Exercise-Induced Angina",
-        "slope": "Slope of ST Segment",
-        "num_major_vessels": "Number of Major Vessels",
-    }
-
-    cat_plot = plot_categorical_vs_target(df, axis_titles)
-    cat_plot.save(os.path.join(output_dir, "categorical_vs_target.png"), scale_factor=2)
+    if cat_cols:
+        cat_plot = plot_categorical_vs_target(df, cat_cols, target_col, axis_titles=axis_titles_dict)
+        cat_plot.save(os.path.join(output_dir, "categorical_vs_target.png"), scale_factor=2)
 
     # Correlation heatmap
-    cat_cols = list(axis_titles.keys())  
-    corr_chart = plot_correlation_heatmap(df, num_cols=num_cols, cat_cols=cat_cols, target_col='target')
+    corr_chart = plot_correlation_heatmap(df, num_cols=num_cols, cat_cols=cat_cols, target_col=target_col)
     corr_chart.save(os.path.join(output_dir, "correlation_heatmap.png"), scale_factor=2)
 
 
