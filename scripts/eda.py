@@ -1,4 +1,3 @@
-# +
 import pandas as pd
 import altair as alt
 
@@ -175,7 +174,11 @@ def plot_categorical_vs_target(df, axis_titles):
             alt.Chart(df)
             .mark_bar(size=30)
             .encode(
-                x=alt.X(f"{col}:N", title=title),
+                x=alt.X(
+                    f"{col}:N",
+                    title=title,
+                    scale=alt.Scale(paddingInner=0.5, paddingOuter=0.5)  
+                ),
                 xOffset="target:N",
                 y=alt.Y("count()", title="Count"),
                 color=alt.Color("target:N", title="Heart Disease"),
@@ -185,4 +188,64 @@ def plot_categorical_vs_target(df, axis_titles):
         )
         charts.append(chart)
 
+    rows = []
+    for i in range(0, len(charts), 2):
+        rows.append(alt.hconcat(*charts[i : i + 2]))
+
+    return alt.vconcat(*rows).configure_legend(orient="top")
+
+
+def plot_correlation_heatmap(df, num_cols, cat_cols, target_col='target'):
+    """
+    Generate a correlation heatmap for all numerical and categorical features with the target.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Dataset containing numerical and categorical features along with the target column.
+    num_cols : list of str
+        List of numerical feature column names.
+    cat_cols : list of str
+        List of categorical feature column names.
+    target_col : str, optional
+        Name of the target column. Default is 'target'.
+
+    Returns
+    -------
+    alt.Chart
+        Correlation heatmap chart with correlation values as text.
+    """
+    df_corr = df.copy()
+    if df_corr[target_col].dtype == 'O' or df_corr[target_col].dtype.name == 'category':
+        df_corr[target_col] = df_corr[target_col].replace({
+            'Heart Disease': 1,
+            'No Heart Disease': 0
+        })
     
+    corr_matrix = df_corr[num_cols + cat_cols + [target_col]].corr()
+
+    corr_long = corr_matrix.reset_index().melt(id_vars='index')
+    corr_long.columns = ['feature_x', 'feature_y', 'correlation']
+    
+    base = alt.Chart(corr_long).encode(
+        x=alt.X('feature_x:N', title='Feature'),
+        y=alt.Y('feature_y:N', title='Feature')
+    )
+    heatmap = base.mark_rect().encode(
+        color=alt.Color('correlation:Q', scale=alt.Scale(scheme='redblue', domain=[-1, 1])),
+        tooltip=['feature_x', 'feature_y', 'correlation']
+    )
+    text = base.mark_text(
+        fontSize=12,
+        color='black'
+    ).encode(
+        text=alt.Text('correlation:Q', format='.2f')
+    )
+
+    final_chart = (heatmap + text).properties(
+        title='Correlation Heatmap of All Features with Target',
+        width=600,
+        height=600
+    )
+
+    return final_chart
