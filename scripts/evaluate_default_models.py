@@ -2,26 +2,51 @@ import click
 import pandas as pd
 from pathlib import Path
 import pickle
+import os
+import sys
 
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import make_scorer, fbeta_score
-from utils import mean_std_cross_val_scores
-from models import get_models
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from utils.mean_std_cv_scores import mean_std_cross_val_scores
+from utils.models import get_models
 
     
 @click.command()
-@click.option('--X_train_path', required=True, help='Path to X_train data CSV')
-@click.option('--y_train_path', required=True, help='Path to y_train data CSV')
-@click.option('--preprocessor_path', required=True, help='Path to preprocessor')
-@click.option('--pos_label', default='Heart Disease', help='Positive class label for fbeta_score')
+@click.option('--train-data', required=True, help='Path to train data CSV')
+@click.option('--target-col', required=True, help='Name of the target column')
+@click.option('--preprocessor-path', required=True, help='Path to preprocessor')
+@click.option('--pos-label', default='Heart Disease', help='Positive class label for fbeta_score')
 @click.option('--beta', default=2.0, help='Beta parameter for fbeta_score')
-@click.option('--random_state', default=123, help='Random state for classifiers')
+@click.option('--random-state', default=123, help='Random state for classifiers')
 @click.option('--results', required=True, help='File path to save results table, include name of the CSV file e.g., results/CV_scores_default_parameters.csv')
 
-def main(X_train_path, y_train_path, preprocessor_path, pos_label, beta, random_state, results):
+def main(train_data, target_col, preprocessor_path, pos_label, beta, random_state, results):
+    """
+    Evaluate default models using cross-validation and save results.
+    Parameters
+    ----------
+    train_data : str
+        Path to training data CSV file.
+    target_col : str
+        Name of the target column in the dataset.
+    preprocessor_path : str
+        Path to the preprocessor pickle file.
+    pos_label : str
+        Positive class label for fbeta_score.
+    beta : float
+        Beta parameter for fbeta_score.
+    random_state : int
+        Random state for classifiers.
+    results : str
+        File path to save results table.
+    """
 
-    X_train = pd.read_csv(X_train_path)
-    y_train = pd.read_csv(y_train_path).squeeze("columns")
+    df = pd.read_csv(train_data)
+
+    X_train = df.drop(columns=[target_col])
+    y_train = df[target_col]
 
     with open(preprocessor_path, "rb") as f:
         preprocessor = pickle.load(f)
