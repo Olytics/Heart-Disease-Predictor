@@ -29,24 +29,7 @@ def main(raw_data, data_to, preprocessor_to, seed, split):
     np.random.seed(seed)
     set_config(transform_output="pandas")
 
-    colnames = [
-        'patient_id', 
-        'age', 
-        'gender', 
-        'chest_pain', 
-        'resting_bp',
-        'serum_cholesterol', 
-        'fasting_blood_sugar', 
-        'resting_electro',
-        'max_heart_rate', 
-        'exercise_angina', 
-        'old_peak', 
-        'slope', 
-        'num_major_vessels',
-        'target'
-    ]
-
-    heart = pd.read_csv(raw_data, names=colnames, header=0)
+    heart = pd.read_csv(raw_data)
 
     # Change values of 1 and 0 to 'Heart Disease' and 'No Heart Disease' in target
     heart['target'] = heart['target'].replace({
@@ -68,7 +51,8 @@ def main(raw_data, data_to, preprocessor_to, seed, split):
     test_heart.to_csv(os.path.join(data_to, "test_heart.csv"), index=False)
 
     # Column definitions
-    binary = ["gender", "fasting_blood_sugar", "exercise_angina", "target"]
+    binary = ["gender", "fasting_blood_sugar", "exercise_angina"]
+    passthrough = ["target"]
     ohe = ["chest_pain", "resting_electro"]
     numerical = [
         "age",
@@ -85,7 +69,7 @@ def main(raw_data, data_to, preprocessor_to, seed, split):
             (StandardScaler(), numerical),
             (OneHotEncoder(sparse_output=False), ohe),
             (OrdinalEncoder(), ordinal),
-            ('passthrough', binary),
+            ('passthrough', binary+passthrough),
             ('drop', drop)
         )
     
@@ -96,18 +80,7 @@ def main(raw_data, data_to, preprocessor_to, seed, split):
         pickle.dump(heart_preprocessor, f)
 
     heart_train_preprocessed = heart_preprocessor.fit_transform(train_heart)
-    column_names = (
-        numerical
-        + heart_preprocessor.named_transformers_['onehotencoder']
-            .get_feature_names_out(ohe).tolist()
-        + ordinal
-        + binary
-    )
-    heart_train_preprocessed = pd.DataFrame(heart_train_preprocessed, 
-                                            columns = column_names)
-    
     heart_test_preprocessed = heart_preprocessor.transform(test_heart)
-    heart_test_preprocessed = pd.DataFrame(heart_test_preprocessed, columns = column_names)
 
     heart_train_preprocessed.to_csv(os.path.join(
         data_to, "heart_train_preprocessed.csv"), index=False)
