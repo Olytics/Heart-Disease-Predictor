@@ -7,6 +7,7 @@ import os
 import numpy as np
 import pandas as pd
 import pickle
+from pathlib import Path
 from sklearn import set_config
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import RandomizedSearchCV
@@ -18,17 +19,15 @@ from sklearn.metrics import ConfusionMatrixDisplay
 from joblib import dump
 
 @click.command()
-@click.option('--X_train_path', required=True, help='Path to X_train data CSV')
-@click.option('--y_train_path', required=True, help='Path to y_train data CSV')
-@click.option('--pos_label', default='Heart Disease', help='Positive class label for fbeta_score')
-@click.option('--results_to', type=str, help="Path to directory where the final model will be written to")
+@click.option('--train-data', required=True, help='Path to train data CSV')
+@click.option('--target-col', required=True, help='Name of the target column')
+@click.option('--preprocessor-path', required=True, help='Path to preprocessor')
+@click.option('--pos-label', default='Heart Disease', help='Positive class label for fbeta_score')
 @click.option('--beta', default=2.0, help='Beta parameter for fbeta_score')
-@click.option('--X_test_path', required=True, help="Path to X_test data CSV")
-@click.option('--y_test_path', required=True, help="Path to y_test data CSV")
-@click.option('--preprocessor_path', required=True, help='Path to preprocessor')
 @click.option('--seed', type=int, help="Random seed", default=123)
+@click.option('--results-to', type=str, help="Path to directory where the final model will be written to")
 
-def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path, pos_label, beta, seed, results_to):
+def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, results_to):
     '''
     Perform hyperparameter tuning on three classifiers: Decision Tree, Logistic Regression, and SVM.
     Also save the best classifier model and scores.
@@ -37,10 +36,10 @@ def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path
     set_config(transform_output="pandas")
 
     # Reading the training data and loading the preprocessor
-    X_train = pd.read_csv(X_train_path)
-    y_train = pd.read_csv(y_train_path).squeeze("columns")
-    X_test = pd.read_csv(X_test_path)
-    y_test = pd.read_csv(y_test_path).squeeze("columns")
+    train_df = pd.read_csv(train_data)
+
+    X_train = train_df.drop(columns=[target_col])
+    y_train = train_df[target_col]
 
     with open(preprocessor_path, "rb") as f:
         preprocessor = pickle.load(f)
@@ -75,6 +74,7 @@ def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path
     search_svm.fit(X_train, y_train)
 
     # Finding the best model from the best scores
+    results_dict = dict()
     best_score = 0
     best_model = None
     model_summary = {
@@ -83,6 +83,7 @@ def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path
         'RBF SVM': [search_svm, search_svm.best_score_, search_svm.best_params_]
     }
     for model_name, summary in model_summary.items():
+        results_dict[model_name] = [summary[1], summary[2]]
         print(f"The best F2 score for {model_name} is {summary[1]} with parameters {summary[2]}")
         best_score = max(best_score, summary[1])
         if best_score == summary[1]:
@@ -91,25 +92,18 @@ def main(X_train_path, y_train_path, X_test_path, y_test_path, preprocessor_path
             continue
     
     # Build Final Models with Best Parameters
-    final_model = make_pipeline(preprocessor, model_summary[best_model][0])
+    final_model = model_summary[best_model][0]
     final_model.fit(X_train, y_train)
-    result = final_model.score(X_test, y_test)
-    return f'(The score on the test set using {best_model} is {result})'
-
-    # Save final model in pickle file
-    with open(os.path.join(results_to, "heart_final_model.pickle"), 'wb') as f:
+    
+    with open(os.path.join(results_to, "final_model.pickle"), 'wb') as f:
         pickle.dump(final_model, f)
 
+    # Save models and results
+    results_df = pd.DataFrame(results_dict).T
+    results_df.columns = ['F2 Score', 'Best Model Parameters']
+    os.makedirs(results_to, exist_ok=True)
     
-    # Save the confusion matrix plot
-    cm = ConfusionMatrixDisplay.from_estimator(
-    final_model,
-    X_test,
-    y_test
-    )
-    cm.to_png(os.path.join(results_to, "confusion_matrix.png"))
-
+    results_df.to_csv(os.path.join(results_to, "hyperparameter_model_results.csv"), index=False)
 
 if __name__ == '__main__':
-    main()
-    
+    main()  
