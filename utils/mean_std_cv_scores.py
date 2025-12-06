@@ -1,3 +1,8 @@
+# Adapted from UBC MDS DSCI 571 utils/mean_std_cv_scores.py
+
+import pandas as pd
+from sklearn.model_selection import cross_validate
+
 def mean_std_cross_val_scores(model, X_train, y_train, scoring=None, **kwargs):
     """
     Returns mean and std of cross validation
