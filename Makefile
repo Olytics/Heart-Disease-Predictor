@@ -23,13 +23,13 @@ PREPROC_OUTPUTS = \
 	data/processed/test_heart.csv \
 	data/processed/heart_train_preprocessed.csv \
 	data/processed/heart_test_preprocessed.csv \
-	results/models/heart_preprocessor.pickle
+	results/preprocessor/heart_preprocessor.pickle
 
 $(PREPROC_OUTPUTS) : scripts/preprocessing.py data/validated/heart_validated.csv
 	python scripts/preprocessing.py \
 		--raw-data data/validated/heart_validated.csv \
 		--data-to data/processed \
-		--preprocessor-to results/models \
+		--preprocessor-to results/preprocessor \
 		--seed 123 \
 		--split 0.2
 
@@ -56,11 +56,11 @@ $(EDA_OUTPUTS) : scripts/eda.py data/processed/train_heart.csv
 # =========================================================
 # 5. Run models
 # =========================================================
-results/CV_scores_default_parameters.csv : scripts/evaluate_default_models.py data/processed/train_heart.csv results/models/heart_preprocessor.pickle
+results/CV_scores_default_parameters.csv : scripts/evaluate_default_models.py data/processed/train_heart.csv results/preprocessor/heart_preprocessor.pickle
 	python scripts/evaluate_default_models.py \
 		--train-data data/processed/train_heart.csv \
 		--target-col target \
-		--preprocessor-path results/models/heart_preprocessor.pickle \
+		--preprocessor-path results/preprocessor/heart_preprocessor.pickle \
 		--pos-label "Heart Disease" \
 		--beta 2.0 \
 		--random-state 123 \
@@ -76,7 +76,7 @@ HPT_OUTPUTS = \
 $(HPT_OUTPUTS): scripts/hyperparameter_tuning.py $(PREPROC_OUTPUTS)
 	python scripts/hyperparameter_tuning.py --train-data data/processed/train_heart.csv \
 	--target-col target \
-	--preprocessor-path results/models/heart_preprocessor.pickle \
+	--preprocessor-path results/preprocessor/heart_preprocessor.pickle \
 	--pos-label "Heart Disease" \
 	--beta 2.0 \
 	--seed 123 \
