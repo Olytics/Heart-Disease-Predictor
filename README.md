@@ -17,7 +17,7 @@ The [dataset](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/tre
 
 ## Report
 
-The final report can be found in our [here](https://sjbalagit.github.io/Heart-Disease-Predictor---Group16/analysis/heart_disease_analysis.html).
+The final report can be found [here](https://sjbalagit.github.io/Heart-Disease-Predictor---Group16/analysis/heart_disease_analysis.html).
 
 ## Rendering the Quarto Report
 
