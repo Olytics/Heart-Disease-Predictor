@@ -6,7 +6,7 @@ Authors: Shrabanti Bala Joya, Sarisha Das, Omowunmi Obadero, Mantram Sharma
 
 Here we attempt to build a classification model to predict whether an individual is at risk of a heart disease. The dataset contains 1000 unique examples and 14 features containing information on the individuals cholesterol, blood pressure, fasting blood sugar, etc. Our target column contains binary encoding where 1 translates to 'heart disease' and 0 to 'no heart disease'. 
 
-We performed exploratory data analysis (EDA) and applied SciKit Learn's preprocessing tools such as StandardScaler, OneHotEncoder and Ordinal encoder to preprocess the data based on the EDA. We built four different models - Decision Tree, Support Vector Machine (SVM) with Radial Basis Function (RBF) kernel, Logistic Regression and a Dummy Classifier. We used the Dummy Classifier as the baseline and compared cross-validation scores achieved from the other three models. The Support Vector Machine (Classifier) performed reasonably well than the other models with 0.98 test accuracy with recall = 1.0 and precision = 0.97.
+We performed exploratory data analysis (EDA) and applied SciKit Learn's preprocessing tools such as StandardScaler, OneHotEncoder and Ordinal encoder to preprocess the data based on the EDA. We built four different models - Decision Tree, Support Vector Machine (SVM) with Radial Basis Function (RBF) kernel, Logistic Regression and a Dummy Classifier. We used the Dummy Classifier as the baseline and compared cross-validation scores achieved from the other three models. The Support Vector Machine (Classifier) performed reasonably well than the other models with 0.98 test accuracy with recall = 0.98 and precision = 0.98.
 
 It is imperative to ensure accurate diagnosis of heart disease based on a individuals clinical features. Among the evaluated models, we believe that the Support Vector Machine with RBF Kernel will yield the most reliable results as reflected in it's overall performance.
 
@@ -18,16 +18,6 @@ The [dataset](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/tre
 ## Report
 
 The final report can be found [here](https://sjbalagit.github.io/Heart-Disease-Predictor---Group16/analysis/heart_disease_analysis.html).
-
-## Rendering the Quarto Report
-
-If you want to regenerate the HTML report from the Quarto source file, run:
-
-```
-quarto render analysis/heart_disease_analysis.qmd --to html
-```
-This will produce an updated HTML file in the same directory.
-Ensure that Quarto is installed, see installation instructions [here](https://quarto.org/docs/get-started/)
 
 ## Usage (Attributed from Breast-Cancer-Predictor Project README)
 
@@ -52,8 +42,8 @@ docker compose up
 3. Open a terminal and execute the following commands to run the analysis:
 
 ```
-# Step 1: Preprocess data
-python ./scripts/import_data.py \
+# Step 1: Download and extract data
+python scripts/import_data.py \
     --url https://prod-dcd-datasets-cache-zipfiles.s3.eu-west-1.amazonaws.com/dzz48mvjht-1.zip \
     --write-to data/raw \
     --zip-name dataset.zip
@@ -88,7 +78,7 @@ python scripts/evaluate_default_models.py \
     --pos-label "Heart Disease" \
     --beta 2.0 \
     --random-state 123 \
-    --results results/CV_scores_default_parameters.csv
+    --results results/cv_default_models/cv_scores_default_parameters.csv
         
 # Step 6: Hyperparameter tuning
 python scripts/hyperparameter_tuning.py --train-data data/processed/train_heart.csv \
@@ -106,7 +96,7 @@ python scripts/evaluate_scores.py \
     --final-model-path results/final_model_results/final_model.pickle \
     --pos-label "Heart Disease" \
     --beta 2.0 \
-    --results-to results/final_model_results    
+    --results-to results/final_model_results   
 ```
 
 ### Clean up
@@ -138,13 +128,11 @@ conda-lock -k explicit --file environment.yml -p linux-64
 
 6. Send a pull request to merge the changes into the main branch.
 
-### Dependencies
+7. If you want to regenerate the HTML report from the Quarto source file, run:
 
-- conda (version 23.9.0 or higher)
-- conda-lock (version 2.5.7 or higher)
-- jupyterlab (version 4.0.0 or higher)
-- nb_conda_kernels (version 2.3.1 or higher)
-- Python and packages listed in environment.yml
+```
+quarto render analysis/heart_disease_analysis.qmd --to html
+```
 
 ## License
 The Heart Disease Predictor report contained in this repository is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License](https://creativecommons.org/licenses/by-nc-sa/4.0/). Please refer to the [license file](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/blob/main/LICENSE) for full details. If you reuse or adapt any part of this report, kindly provide proper attribution and include a link to this webpage.
