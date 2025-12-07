@@ -31,7 +31,7 @@ $(PREPROC_OUTPUTS) : scripts/preprocessing.py data/validated/heart_validated.csv
 		--data-to data/processed \
 		--preprocessor-to results/preprocessor \
 		--seed 123 \
-		--split 0.2
+		--split 0.3
 
 # =========================================================
 # 4. Perform EDA
@@ -96,7 +96,6 @@ $(EVAL_OUTPUTS): scripts/evaluate_scores.py data/processed/test_heart.csv result
 		--final-model-path results/final_model_results/final_model.pickle \
 		--pos-label "Heart Disease" \
 		--beta 2.0 \
-		--seed 123 \
 		--results-to results/final_model_results
 
 # =========================================================
