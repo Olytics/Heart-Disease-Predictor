@@ -99,7 +99,6 @@ python scripts/evaluate_scores.py \
     --results-to results/final_model_results   
 
 quarto render analysis/heart_disease_analysis.qmd --to html
-quarto render analysis/heart_disease_analysis.qmd --to pdf
 ```
 
 ### Clean up
