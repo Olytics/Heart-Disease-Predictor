@@ -10,7 +10,7 @@ We performed exploratory data analysis (EDA) and applied SciKit Learn's preproce
 
 It is imperative to ensure accurate diagnosis of heart disease based on a individuals clinical features. Among the evaluated models, we believe that the Support Vector Machine with RBF Kernel will yield the most reliable results as reflected in it's overall performance.
 
-The [dataset](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/tree/main/data/raw/Cardiovascular_Disease_Dataset) used in this project has been obtained from [`Mendeley Data`](https://data.mendeley.com/datasets/dzz48mvjht/1). A detailed explanation of all the important features are provided in our analysis. You can find the raw and processed datasets in the data directory of this repository. Our X_train and X_test are represented in X_train.csv and X_test.csv respectively.
+The [dataset](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/tree/main/data/raw/Cardiovascular_Disease_Dataset) used in this project has been obtained from [`Mendeley Data`](https://data.mendeley.com/datasets/dzz48mvjht/1). A detailed explanation of all the important features are provided in our analysis. You can find the raw and processed datasets in the data directory of this repository. Our train and test dataset are represented in [train_heart.csv](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/blob/main/data/processed/train_heart.csv) and [test_heart.csv](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/blob/main/data/processed/test_heart.csv) respectively.
 
 ## Dependencies
 - [Docker](https://www.docker.com/)
