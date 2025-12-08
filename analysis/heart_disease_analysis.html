@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -51,14 +51,15 @@ div.csl-indent {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="heart_disease_analysis_files/libs/clipboard/clipboard.min.js"></script>
 <script src="heart_disease_analysis_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="heart_disease_analysis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="heart_disease_analysis_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="heart_disease_analysis_files/libs/quarto-html/popper.min.js"></script>
 <script src="heart_disease_analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="heart_disease_analysis_files/libs/quarto-html/anchor.min.js"></script>
 <link href="heart_disease_analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="heart_disease_analysis_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="heart_disease_analysis_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="heart_disease_analysis_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="heart_disease_analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="heart_disease_analysis_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="heart_disease_analysis_files/libs/bootstrap/bootstrap-590c0f0efd03e66f4b1e967e63cdcb51.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -77,7 +78,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -161,7 +162,7 @@ window.Quarto = {
 <section id="summary" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Summary</h1>
 <p>We wish to create a simple machine learning classification model which can help us predict high risk individuals for heart disease. We try three methods: Decision Tree Classifier, Logistic Regression and Support Vector Machine with Radial Basis Function (RBF) Kernel to use 14 common features related to heart disease to make the predictions. Here we aimed to find the best model that predicts whether an individual is at risk of developing heart disease based on their clinical features, enabling early identification and prevention measures.</p>
-<p>We have selected F2 score as our primary performance metric since our primary goal is to minimize False Negatives - cases where patients at risk of heart disease are incorrectly identified as healthy. The final classifier SVM RBF performed reasonably well on the unseen test dataset, achieving an F2 score (β = 2) of np.float64(0.9824). Out of the np.int64(300) test data cases, it correctly predicted np.int64(293) and misclassified np.int64(7), out of which there are np.int64(4) False Negatives - predicting that a patient is at risk of developing heart disease when they are in fact healthy and np.int64(3) False Positives. Although False Positives could cause the patient to undergo unnecessary treatment if the model is used as a decision tool, we expect there to be additional decision layers which can mitigate this. As such, we believe this model serves as a valuable decision-support tool, assisting medical professionals in identifying high-risk individuals for closer monitoring and timely intervention.</p>
+<p>We have selected F2 score as our primary performance metric since our primary goal is to minimize False Negatives - cases where patients at risk of heart disease are incorrectly identified as healthy. The final classifier SVM RBF performed reasonably well on the unseen test dataset, achieving an F2 score (β = 2) of 0.9824. Out of the 300 test data cases, it correctly predicted 293 and misclassified 7, out of which there are 4 False Negatives - predicting that a patient is at risk of developing heart disease when they are in fact healthy and 3 False Positives. Although False Positives could cause the patient to undergo unnecessary treatment if the model is used as a decision tool, we expect there to be additional decision layers which can mitigate this. As such, we believe this model serves as a valuable decision-support tool, assisting medical professionals in identifying high-risk individuals for closer monitoring and timely intervention.</p>
 </section>
 <section id="introduction" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Introduction</h1>
@@ -454,7 +455,7 @@ Figure&nbsp;6: Confusion matrix of SVM RBF performance on test data.
 <section id="results-and-discussion" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Results and Discussion</h1>
 <p><strong>Model Perforamce</strong></p>
-<p>After extensive preprocessing and EDA, we identified our best performing model among the three candidates - Decision Tree Classifier, Logistic Regression and Support Vector Machine (SVM) with Radial Basis Function (RBF) Kernel and Dummy Classifier as the baseline by using cross-validation and randomized search of hyperparameters. SVM RBF stands out as the best perfomer achieving a validation score of np.float64(0.9679) - higher than the other two models. The model achieved F2 score of np.float64(0.9824) and accuracy of np.float64(0.98) when deployed on the test data. It successfully minimized the False Negatives with Recall = np.float64(0.98) and Precision = np.float64(0.98) as seen in the <a href="#fig-conf-mtx" class="quarto-xref">Figure&nbsp;6</a>.</p>
+<p>After extensive preprocessing and EDA, we identified our best performing model among the three candidates - Decision Tree Classifier, Logistic Regression and Support Vector Machine (SVM) with Radial Basis Function (RBF) Kernel and Dummy Classifier as the baseline by using cross-validation and randomized search of hyperparameters. SVM RBF stands out as the best perfomer achieving a validation score of 0.9679 - higher than the other two models. The model achieved F2 score of 0.9824 and accuracy of 0.98 when deployed on the test data. It successfully minimized the False Negatives with Recall = 0.98 and Precision = 0.98 as seen in the <a href="#fig-conf-mtx" class="quarto-xref">Figure&nbsp;6</a>.</p>
 <div class="cell" data-execution_count="4">
 <div id="tbl-hyperparams" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="4">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -603,13 +604,14 @@ World Health Organization. 2025. <span>“Global Health Estimates: Leading Cause
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
