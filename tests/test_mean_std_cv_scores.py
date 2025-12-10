@@ -1,9 +1,14 @@
 import pandas as pd
 import pytest
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import make_scorer, fbeta_score
+from sklearn.utils._param_validation import InvalidParameterError
 
 from utils.mean_std_cv_scores import mean_std_cross_val_scores
 
@@ -88,7 +93,7 @@ def test_mean_std_cv_scores_invalid_model():
 
     scoring = make_scorer(fbeta_score, beta=2, pos_label="Heart Disease")
     
-    with pytest.raises(AttributeError):
+    with pytest.raises(InvalidParameterError):
         mean_std_cross_val_scores("not_a_model", X, y, scoring, cv=2)
 
 
