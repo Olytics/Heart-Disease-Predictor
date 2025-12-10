@@ -7,14 +7,12 @@ import os
 import numpy as np
 import pandas as pd
 import pickle
-from pathlib import Path
 from sklearn import set_config
-from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import RandomizedSearchCV
-from sklearn.metrics import fbeta_score, make_scorer
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from utils.optimal_hyperparameters import tune_hyperparameters
+from utils.models import get_models
 
 @click.command()
 @click.option('--train-data', required=True, help='Path to train data CSV')
@@ -45,9 +43,7 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
     tree_param_dist = {
     'decisiontreeclassifier__max_depth': np.arange(1, 11)
     }
-    tree_model = make_pipeline(preprocessor, DecisionTreeClassifier(random_state=seed))
-    search_tree = RandomizedSearchCV(tree_model, tree_param_dist, return_train_score=True,random_state=seed,
-                                    n_jobs=-1, scoring=make_scorer(fbeta_score, pos_label=pos_label, beta=beta))
+    search_tree = tune_hyperparameters(get_models(random_state=seed)["decision tree"], preprocessor, tree_param_dist, pos_label, beta, seed)
     search_tree.fit(X_train, y_train)
 
     # Running the hyperparameter tuning for Logistic Regression
@@ -55,9 +51,7 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
         "logisticregression__C" : 10.0 ** np.arange(-3, 2, 1),
         "logisticregression__max_iter" : [80, 100, 500, 1000, 1500, 2000]
     }
-    log_model = make_pipeline(preprocessor, LogisticRegression(random_state=seed))
-    search_log = RandomizedSearchCV(log_model, logistic_param_dist, return_train_score=True,random_state=seed,
-                                    n_jobs=-1, scoring=make_scorer(fbeta_score, pos_label=pos_label, beta=beta))
+    search_log = search_tree = tune_hyperparameters(get_models(random_state=seed)["Logistic Regression"], preprocessor, logistic_param_dist, pos_label, beta, seed)
     search_log.fit(X_train, y_train)
 
     # Running the hyperparameter tuning for SVM
@@ -65,9 +59,7 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
         "svc__C": 10.0 ** np.arange(-3, 2, 1),
         "svc__gamma": 10.0 ** np.arange(-3, 2, 1)
     }
-    svm_model = make_pipeline(preprocessor, SVC(random_state=seed))
-    search_svm = RandomizedSearchCV(svm_model, SVM_param_dist, return_train_score=True,random_state=seed,
-                                    n_jobs=-1, scoring=make_scorer(fbeta_score, pos_label=pos_label, beta=beta))
+    search_svm = search_tree = tune_hyperparameters(get_models(random_state=seed)["RBF SVM"], preprocessor, SVM_param_dist, pos_label, beta, seed)
     search_svm.fit(X_train, y_train)
 
     # Finding the best model from the best scores
@@ -87,7 +79,7 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
             best_model = model_name
         else:
             continue
-    
+        
     # Build Final Models with Best Parameters
     final_model = model_summary[best_model][0].best_estimator_
     
