@@ -51,7 +51,7 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
         "logisticregression__C" : 10.0 ** np.arange(-3, 2, 1),
         "logisticregression__max_iter" : [80, 100, 500, 1000, 1500, 2000]
     }
-    search_log = search_tree = tune_hyperparameters(get_models(random_state=seed)["Logistic Regression"], preprocessor, logistic_param_dist, pos_label, beta, seed)
+    search_log = tune_hyperparameters(get_models(random_state=seed)["Logistic Regression"], preprocessor, logistic_param_dist, pos_label, beta, seed)
     search_log.fit(X_train, y_train)
 
     # Running the hyperparameter tuning for SVM
@@ -59,7 +59,7 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
         "svc__C": 10.0 ** np.arange(-3, 2, 1),
         "svc__gamma": 10.0 ** np.arange(-3, 2, 1)
     }
-    search_svm = search_tree = tune_hyperparameters(get_models(random_state=seed)["RBF SVM"], preprocessor, SVM_param_dist, pos_label, beta, seed)
+    search_svm = tune_hyperparameters(get_models(random_state=seed)["RBF SVM"], preprocessor, SVM_param_dist, pos_label, beta, seed)
     search_svm.fit(X_train, y_train)
 
     # Finding the best model from the best scores
@@ -79,7 +79,6 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
             best_model = model_name
         else:
             continue
-        
     # Build Final Models with Best Parameters
     final_model = model_summary[best_model][0].best_estimator_
     
