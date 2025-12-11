@@ -40,32 +40,17 @@ def main(train_data, target_col, preprocessor_path, pos_label, beta, seed, resul
     with open(preprocessor_path, "rb") as f:
         preprocessor = pickle.load(f)
 
-    # Running the hyperparameter tuning for Decision Tree
-    tree_param_dist = {
-    'decisiontreeclassifier__max_depth': np.arange(1, 11)
-    }
-    search_tree = tune_hyperparameters(X_train, y_train, get_models(random_state=seed)["decision tree"], preprocessor, tree_param_dist, pos_label, beta, seed)
-
-    # Running the hyperparameter tuning for Logistic Regression
-    logistic_param_dist = {
-        "logisticregression__C" : 10.0 ** np.arange(-3, 2, 1),
-        "logisticregression__max_iter" : [80, 100, 500, 1000, 1500, 2000]
-    }
-    search_log = tune_hyperparameters(X_train, y_train, get_models(random_state=seed)["Logistic Regression"], preprocessor, logistic_param_dist, pos_label, beta, seed)
-
-    # Running the hyperparameter tuning for SVM
-    SVM_param_dist = {
-        "svc__C": 10.0 ** np.arange(-3, 2, 1),
-        "svc__gamma": 10.0 ** np.arange(-3, 2, 1)
-    }
-    search_svm = tune_hyperparameters(X_train, y_train, get_models(random_state=seed)["RBF SVM"], preprocessor, SVM_param_dist, pos_label, beta, seed)
+    # Running the hyperparameter tuning for all models
+    model_summary = dict()
+    for model_name, model_info in get_models(random_state=seed).items():
+        if model_name == "dummy clf":
+            continue
+        model_summary[model_name] = [tune_hyperparameters(X_train, y_train, model_info[0], preprocessor, model_info[1], pos_label, beta, seed), 
+                                     tune_hyperparameters(X_train, y_train, model_info[0], preprocessor, model_info[1], pos_label, beta, seed).best_score_,
+                                     tune_hyperparameters(X_train, y_train, model_info[0], preprocessor, model_info[1], pos_label, beta, seed).best_params_
+                                    ]
 
     # Finding the best model from the best scores and creating final_model
-    model_summary = {
-        'Decision Tree': [search_tree, search_tree.best_score_, search_tree.best_params_],
-        'Logistic Regression': [search_log, search_log.best_score_, search_log.best_params_],
-        'RBF SVM': [search_svm, search_svm.best_score_, search_svm.best_params_]
-    }
     final_model, results_dict = get_best_model(model_summary)
     
     os.makedirs(results_to, exist_ok=True)
