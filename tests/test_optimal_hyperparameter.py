@@ -1,4 +1,6 @@
 import pytest
+import sys
+import os
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_classification
@@ -7,6 +9,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import fbeta_score, make_scorer
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.optimal_hyperparameters import tune_hyperparameters, get_best_model
 
 # Fixtures for common test data
