@@ -3,6 +3,13 @@ from sklearn.metrics import fbeta_score, make_scorer
 from sklearn.pipeline import make_pipeline
 
 def tune_hyperparameters(X_train, y_train, model, preprocessor, param_dist, pos_label, beta, seed):
+    """
+    Tune the hyperparameters of the model using RandomizedSearchCV and return the fitted model
+
+    Returns
+    -------
+    RandomizedSearchCV object that is fit on (X_train, y_train)
+    """
     if pos_label < 0 or param_dist == {} or beta < 0:
         raise ValueError
     model = make_pipeline(preprocessor, model)
