@@ -56,29 +56,29 @@ def plot_target_distribution(df, target_col):
 
     bar = (
         alt.Chart(counts)
-        .mark_bar(stroke="black", strokeWidth=1)
+        .mark_bar()
         .encode(
             x=alt.X(
                 "count:Q",
                 title="Count",
-                axis=alt.Axis(labelFontSize=16, titleFontSize=18)
+                axis=alt.Axis(labelFontSize=18, titleFontSize=20)
             ),
             y=alt.Y(
                 f"{target_col}:N",
                 title=target_col.title(),
-                axis=alt.Axis(labelFontSize=16, titleFontSize=18)
+                axis=alt.Axis(labelFontSize=18, titleFontSize=20)
             ),
             color=alt.Color(
                 f"{target_col}:N",
                 title=target_col.title(),
-                legend=alt.Legend(labelFontSize=16, titleFontSize=18)
+                legend=alt.Legend(labelFontSize=18, titleFontSize=20)
             ),
             tooltip=[alt.Tooltip("count:Q", title="Count")]
         )
         .properties(
             title=alt.TitleParams(
                 text=f"DISTRIBUTION OF {target_col.upper()}",
-                fontSize=20  # chart title font size
+                fontSize=24
             ),
             width=500,
             height=400
@@ -113,21 +113,48 @@ def plot_numerical_distributions(df, num_cols):
         Faceted vertical concatenation of histograms.
     """
     charts = []
+
     for col in num_cols:
+        col_title = col.replace("_", " ").title()
+
         chart = (
             alt.Chart(df)
             .mark_bar()
             .encode(
-                x=alt.X(f"{col}:Q", bin=alt.Bin(maxbins=30)),
-                y=alt.Y("count()", title="Count"),
-                tooltip=[alt.Tooltip(f"{col}:Q", title=col), alt.Tooltip("count()", title="Count")],
+                x=alt.X(
+                    col + ":Q",  
+                    bin=alt.Bin(maxbins=30),
+                    title=col_title,
+                    axis=alt.Axis(labelFontSize=18, titleFontSize=20)
+                ),
+                y=alt.Y(
+                    "count()",
+                    title="Count",
+                    axis=alt.Axis(labelFontSize=18, titleFontSize=20)
+                ),
+                tooltip=[
+                    alt.Tooltip(col + ":Q", title=col_title),
+                    alt.Tooltip("count()", title="Count")
+                ],
             )
-            .properties(title=f"Distribution of {col}", width=300, height=250)
+            .properties(
+                title=alt.TitleParams(
+                    text=f"DISTRIBUTION OF {col_title.upper()}",
+                    fontSize=24
+                ),
+                width=500,
+                height=400
+            )
         )
         charts.append(chart)
 
     rows = [alt.hconcat(*charts[i:i+2]) for i in range(0, len(charts), 2)]
-    return alt.vconcat(*rows).configure_legend(orient="top")
+
+    return alt.vconcat(*rows).configure_legend(
+        orient="top",
+        labelFontSize=18,
+        titleFontSize=20
+    )
 
 
 def plot_boxplots(df, num_cols, target_col):
