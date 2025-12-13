@@ -4,7 +4,7 @@ Authors: Shrabanti Bala Joya, Sarisha Das, Omowunmi Obadero, Mantram Sharma
 
 ## About
 
-Here we attempt to build a classification model to predict whether an individual is at risk of a heart disease. The dataset contains 1000 unique examples and 14 features containing information on the individuals cholesterol, blood pressure, fasting blood sugar, etc. Our target column contains binary encoding where 1 translates to 'heart disease' and 0 to 'no heart disease'. 
+Here we attempt to build a classification model to predict whether an individual is at risk of a heart disease. The dataset contains 1000 unique examples and 14 features containing information on the individuals' cholesterol, blood pressure, fasting blood sugar, etc. Our target column contains binary encoding where 1 translates to 'heart disease' and 0 to 'no heart disease'. 
 
 We performed exploratory data analysis (EDA) and applied SciKit Learn's preprocessing tools such as StandardScaler, OneHotEncoder and Ordinal encoder to preprocess the data based on the EDA. We built four different models - Decision Tree, Support Vector Machine (SVM) with Radial Basis Function (RBF) kernel, Logistic Regression and a Dummy Classifier. We used the Dummy Classifier as the baseline and compared cross-validation scores achieved from the other three models. The Support Vector Machine (Classifier) performed reasonably well than the other models with 0.98 test accuracy with recall = 0.98 and precision = 0.98.
 
@@ -116,7 +116,7 @@ docker build --tag <your_tag> .
 ## License
 The Heart Disease Predictor report contained in this repository is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License](https://creativecommons.org/licenses/by-nc-sa/4.0/). Please refer to the [license file](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/blob/main/LICENSE) for full details. If you reuse or adapt any part of this report, kindly provide proper attribution and include a link to this webpage.
 
-The software code included in this repository is licensed under the MIT License. See the [license file](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/blob/main/LICENSE) for further information.
+The software code included in this repository is licensed under the [MIT License](https://mit-license.org/)  See the [license file](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/blob/main/LICENSE) for further information.
 
 ## References
 
