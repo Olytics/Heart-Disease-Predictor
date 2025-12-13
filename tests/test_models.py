@@ -1,3 +1,4 @@
+# VSCode Copilot and ChatGPT was used to assit in writing this test file.
 import pytest
 import sys
 import os
