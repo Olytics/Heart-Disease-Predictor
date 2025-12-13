@@ -169,8 +169,7 @@ hyp_df.round(4)
 
 We are assuming the dataset used is representative of the general population. However, given that the data originates from a specific multispecialty hospital in India, there is a risk of sampling bias. The model may not generalize well to populations with different genetic backgrounds or environmental factors.
 
-The primary limitation of this study is the data size. Although the test score aligns closely with the validation score, indicating good generalization within this specific dataset, the relatively small number of observations limits our ability to ensure the model would perform equally well on a diverse population. Another limitation is that the SVM RBF model is not as interpretable as other models such as Decision Trees. In the given context of medical diagnosis, a models explainability may be prefered to trust its decisions by professionals.
-
+The primary limitation of this study is the data size. Although the test score aligns closely with the validation score, indicating good generalization within this specific dataset, the relatively small number of observations limits our ability to ensure the model would perform equally well on a diverse population. Another limitation is that the SVM RBF model is not as interpretable as other models such as Decision Trees. In the given context of medical diagnosis, a models explainability may be prefered to trust its decisions by professionals. However, since our primary objective was to minimize missed diagnoses, we prioritized the best performing predictive model (SVM RBF) over a more transparent one. This project can evolve in future to address these limitations.
 
 # Conclusion
 
