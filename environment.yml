@@ -10,10 +10,7 @@ dependencies:
   - scikit-learn=1.7.2
   - pandera=0.26.1
   - quarto=1.8.26
-  - altair-all=6.0.0
+  - altair-all=5.*
   - click=8.3.1
   - make=4.4.1
   - pytest=9.0.2
-  - pip
-  - pip:
-      - deepchecks==0.19.1
