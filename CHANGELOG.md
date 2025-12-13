@@ -10,7 +10,7 @@ Names of all team members were added to license.md file. This was missing in Mil
 
 **Addressed by:** Mantram Sharma\
 **Peer review:** [Submission: <16: Heart Disease Analysis> #8 - Comment 2](https://github.com/UBC-MDS/data-analysis-review-2025/issues/8#issuecomment-3629576491)\
-**Project issue:** [Issue item no. 1 and 11](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/issues/51#issuecomment-3640103337)\
+**Project issue:** [Issue item no. 1 and 11](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/issues/51#issuecomment-3640103337), [resolved comment](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/issues/51#issuecomment-3648666894).\
 **Pull request:** [#62](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/pull/62)\
 **Commit:** [a8002c2](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/commit/a8002c245ad1f334bf5e19c1f37790c99099f6e5)
 
@@ -32,7 +32,7 @@ Typo in README.md - "information on the individuals cholesterol" was changed to 
 
 **Addressed by:** Omowunmi Obadero\
 **Peer review:** [Submission: <16: Heart Disease Analysis> #8 - Comment 2](https://github.com/UBC-MDS/data-analysis-review-2025/issues/8#issuecomment-3629576491)\
-**Project issue:** [Issue item no. 16](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/issues/51#issuecomment-3640103337)\
+**Project issue:** [Issue item no. 16](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/issues/51#issuecomment-3640103337), [resolved comment](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/issues/51#issuecomment-3648871322)\
 **Pull request:** [#65](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/pull/65)\
 **Commit:** [480b42e](https://github.com/sjbalagit/Heart-Disease-Predictor---Group16/commit/480b42e08e212523f7925f7379e3c802d66ab2f5)
 
