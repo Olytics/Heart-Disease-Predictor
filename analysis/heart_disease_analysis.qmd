@@ -139,9 +139,16 @@ We evaluated three candidate models: Logistic Regression, Support Vector Machine
 
 ```{python}
 #| label: tbl-cv-default
-#| tbl-cap: 5-fold cross-validation scores for different models with default parameters
+#| tbl-cap: 5 fold cross-validation scores and time (in seconds) for different models with default parameters.
 
 cv_results = pd.read_csv("../results/cv_default_models/cv_scores_default_parameters.csv")
+cv_results = cv_results.rename(columns={
+    "Unnamed: 0": "Model",
+    "fit_time": "Fit Time",
+    "score_time": "Score Time",
+    "test_score": "Test Score",
+    "train_score": "Train Score"
+})
 cv_results.round(3)
 ```
 
