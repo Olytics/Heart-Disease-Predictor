@@ -5,7 +5,7 @@ author:
   - Mantram Sharma
   - Omowunmi Obadero
   - Shrabanti Bala Joya
-date: "06 December 2025"
+date: "13 December 2025"
 jupyter: python3
 format:
   html:
@@ -25,6 +25,7 @@ link-citations: true
 #| warning: false
 
 import pandas as pd
+import ast
 
 results_df = pd.read_csv("../results/final_model_results/evaluate_model_results.csv")
 f2_score = round(results_df['Test F2 Score'].iloc[0], 4)
@@ -42,6 +43,9 @@ precision_score = round(tp / (tp + fp), 2)
 hyp_df = pd.read_csv("../results/final_model_results/hyperparameter_model_results.csv")
 svm_row = hyp_df[hyp_df.iloc[:, 0] == 'RBF SVM'].iloc[0]
 best_val_score = round(svm_row['F2 Score'], 4)
+params = ast.literal_eval(svm_row['Best Model Parameters'])
+best_c = params.get('svc__C')
+best_gamma = params.get('svc__gamma')
 
 test_res_df = pd.read_csv("../results/final_model_results/evaluate_model_results.csv")
 test_f2 = round(test_res_df['Test F2 Score'].iloc[0], 4)
@@ -98,24 +102,24 @@ This section provides a detailed exploration of the dataset, focusing on the dis
 
 **Target Distribution:** The dataset is relatively balanced (@fig-targ-dist), with 398 cases of heart disease and 302 cases without. This slight imbalance is not substantial enough to negatively impact modeling.
 
-![Class balance of the heart disease target variable (Presence vs. Absence).](../results/eda_results/target_distribution.png){#fig-targ-dist width=50%}
+![Class balance of the heart disease target variable (Presence vs. Absence).](../results/eda_results/target_distribution.png){#fig-targ-dist width=85%}
 
 **Feature Distributions:** As seen in @fig-num-hist, none of the continuous features follow a perfect normal distribution. Notably, serum cholesterol and oldpeak are right-skewed, while maximum heart rate is left-skewed.
 
-![Histograms displaying the distribution of continuous features.](../results/eda_results/numerical_feature_distributions.png){#fig-num-hist width=60%}
+![Histograms displaying the distribution of continuous features.](../results/eda_results/numerical_feature_distributions.png){#fig-num-hist width=85%}
 
 **Numerical Features:** Patients with heart disease usually are older and generally exhibit higher resting blood pressure, serum cholesterol, and 'oldpeak' values compared to healthy individuals. On the other hand, they achieve notably lower maximum heart rates, suggesting reduced cardiac capacity under stress.
 
-![Distribution of numeric features stratified by heart disease diagnosis.](../results/eda_results/boxplots_vs_target.png){#fig-num-box width=60%}
+![Distribution of numeric features stratified by heart disease diagnosis.](../results/eda_results/boxplots_vs_target.png){#fig-num-box width=85%}
 
 **Categorical Features:** Higher heart disease prevalence is observed (@fig-cat-dist) in males and patients with exercise-induced angina, ST-T wave abnormalities, or a higher count of major vessels. Additionally, atypical and non-anginal chest pain types showed a stronger association with heart disease than typical angina in this dataset.
 
 
-![Prevalence of heart disease across gender, chest pain type, and other categorical variables.](../results/eda_results/categorical_vs_target.png){#fig-cat-dist width=60%}
+![Prevalence of heart disease across gender, chest pain type, and other categorical variables.](../results/eda_results/categorical_vs_target.png){#fig-cat-dist width=85%}
 
 **Correlations:** The correlation heatmap (@fig-corr-map) reveals that slope, type of chest pain, and resting blood pressure have the strongest positive relationships with the target. On the other hand, age and gender showed surprisingly low linear correlation with the target in this specific dataset.
 
-![Heatmap displaying Pearson correlation between predictors and target in heart disease dataset.](../results/eda_results/correlation_heatmap.png){#fig-corr-map width=60%}
+![Heatmap displaying Pearson correlation between predictors and target in heart disease dataset.](../results/eda_results/correlation_heatmap.png){#fig-corr-map width=85%}
 
 
 ## Scoring Metric
@@ -144,13 +148,13 @@ cv_results.round(3)
 Following the baseline evaluation, we employed scikit learn's [@scikit-learn] randomized search to optimize the hyperparameters for all three models. This process searched a predefined parameter grid to identify the configuration that maximized the F2 score.
 
 
-![Confusion matrix of SVM RBF performance on test data.](../results/final_model_results/confusion_matrix.png){#fig-conf-mtx width=60%}
+![Confusion matrix of SVM RBF performance on test data.](../results/final_model_results/confusion_matrix.png){#fig-conf-mtx width=80%}
 
 # Results and Discussion
 
 **Model Perforamce**
 
-After extensive preprocessing and EDA, we identified our best performing model among the three candidates - Decision Tree Classifier, Logistic Regression and Support Vector Machine (SVM) with Radial Basis Function (RBF) Kernel and Dummy Classifier as the baseline by using cross-validation and randomized search of hyperparameters. SVM RBF stands out as the best perfomer achieving a validation score of `{python} best_val_score` - higher than the other two models. The model achieved F2 score of `{python} test_f2` and accuracy of `{python} test_accuracy` when deployed on the test data. It successfully minimized the False Negatives with Recall = `{python} recall_score` and Precision = `{python} precision_score` as seen in the @fig-conf-mtx.
+After extensive preprocessing and EDA, we identified our best performing model among the three candidates - Decision Tree Classifier, Logistic Regression and Support Vector Machine (SVM) with Radial Basis Function (RBF) Kernel and Dummy Classifier as the baseline by using cross-validation and randomized search of hyperparameters. SVM RBF with hyperparameters $C =$ `{python} best_c` and $ \gamma $ (Gamma) = `{python} best_gamma` stands out as the best performer achieving a validation score of `{python} best_val_score` - higher than the other two models. The model achieved F2 score of `{python} test_f2` and accuracy of `{python} test_accuracy` when deployed on the test data. It successfully minimized the False Negatives with Recall = `{python} recall_score` and Precision = `{python} precision_score` as seen in the @fig-conf-mtx.
 
 ```{python}
 #| label: tbl-hyperparams
