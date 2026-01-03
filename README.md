@@ -1,4 +1,4 @@
-# Heart-Disease-Predictor---Group16
+# Heart-Disease-Predictor
 
 Authors: Shrabanti Bala Joya, Sarisha Das, Omowunmi Obadero, Mantram Sharma
 
